@@ -1,0 +1,34 @@
+version: "3.5"
+
+networks:
+  dank:
+    driver: bridge
+
+services:
+  api:
+    container_name: api
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      URLS: http://0.0.0.0:80
+      ASPNETCORE_ENVIRONMENT: Development
+      Database__Connection: 'User ID=postgres;Password=root;Host=db;Port=5432;Database=dank'
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+    networks:
+      - dank
+  db:
+    container_name: db
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: dank
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5432"
+    networks:
+      - dank
